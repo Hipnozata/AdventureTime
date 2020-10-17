@@ -201,6 +201,7 @@ class Wizard:
     abilities.append(ability('Frost Bolt', 15, 2, 30))
     abilities.append(ability('Pyroblast', 30, 5, 60))
 
+
 characters=[]
 characters.append(Warrior)
 characters.append(Rogue)
@@ -221,11 +222,13 @@ def battle(Player, Enemy):
         if(turn!=0):
             Player.update_turn(Player)
         Player.cast_Player(Player, Enemy)
+        #Enemy.cast_NPC(Enemy, Player)
         turn += 1
         if(Enemy.battle_hp <= 0):
             time.sleep(2)
             print("Gratz! You beat your first enemy!")
-            thanks_for_playing()
+            return
+            
 
 
 def game_welcome():
@@ -244,7 +247,9 @@ def game_welcome():
     print("\n\nNow it's time for your first battle!\n\n Loading... \n\n")
     time.sleep(5)
     clear()
-    print(str(name) + " is fighting " + Boss1.name + "!!!\n\n")
+    print(str(name) + " is fighting " + Boss1.name + "!!!\n\n") #Move to battle()
     battle(characters[character], Boss1)
+    thanks_for_playing()
+    
 
-game_welcome()    
+game_welcome()   
