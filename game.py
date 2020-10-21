@@ -209,10 +209,30 @@ characters.append(Wizard)
 Boss1 = Wizard()
 Boss1.name = "Target Dummy"
 
+
+def NPC_update_turn(Target):
+        if(Target.battle_source!=100):
+            Target.battle_source+=Target.battle_source_regen
+        for i in range (3):
+            if(Target.battle_abilities[i].cooldown!=0):
+                Target.battle_abilities[i].cooldown -= 1
+            #print(str(Target.abilities[i].cooldown) + " ")
+        #print("You have " + str(Target.battle_hp) + " health, " + str(Target.battle_source) + " source left.")
 def thanks_for_playing():
     print("\nIt seems that you have reached the latest stage of the game. It will be updated from time to time so keep an eye out for updates. Thanks for playing!")
 def game_description():
     print("Welcome to my game! This is an RPG where you are the hero and you can choose between three different classes. Once chosen your class will remain the same for the rest of the game. You will battle various enemies and earn points/experience and gain items in order to become stronger and progress through the levels. As this game is still in development there is no gui at the moment. Use terminal for i/o.")
+def cast_NPC(NPC, Target):
+	i = 2
+	while(i>=0):
+		if(NPC.battle_abilities[i].cooldown == 0 and NPC.battle_abilities[i].cost <= NPC.battle_source):
+			Target.battle_hp -= NPC.battle_abilities[i].damage
+			NPC.battle_source -= NPC.battle_abilities[i].cost
+			NPC.battle_abilities[i].cooldown = NPC.abilities[i].cooldown
+			print("\n" + NPC.name + " has casted " + NPC.battle_abilities[i].name + "\n")
+			print("\n" + NPC.name + " has " + str(NPC.battle_hp) + " hp left and " + str(NPC.battle_source) + " source left.\n")
+			return
+		i -= 1
 
 def battle(Player, Enemy):
     turn = 0
@@ -220,14 +240,26 @@ def battle(Player, Enemy):
     Enemy.init_battle()
     while(Enemy.battle_hp>0 and Player.battle_hp>0):
         if(turn!=0):
+            time.sleep(5)
+            clear()
+            print("New Turn!\n")
             Player.update_turn(Player)
+            NPC_update_turn(Enemy)
         Player.cast_Player(Player, Enemy)
+        cast_NPC(Enemy, Player)
         #Enemy.cast_NPC(Enemy, Player)
         turn += 1
         if(Enemy.battle_hp <= 0):
             time.sleep(2)
             print("Gratz! You beat your first enemy!")
             return
+        if(Player.battle_hp <= 0):
+        	time.sleep(2)
+        	print("\nYou have been defeated!")
+        	tryagain = input("Do you wanna try again? (yes/no)\n")
+        	if(tryagain=="yes"):
+        		battle(Player, Enemy)
+
             
 
 
